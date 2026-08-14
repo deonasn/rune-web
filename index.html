@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="./images/rune.png">
+  <title>Project Rune</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" />
+  <link rel="stylesheet" href="../shared/base.css" />   <!-- shared reset + variables, hand-written -->
+  <link rel="stylesheet" href="rune-styles.css" />      <!-- Tailwind-generated, automatic: not hand-written -->
+  <link rel="stylesheet" href="rune.css" />             <!-- Rune-specific custom effects, hand-written -->
+</head>
+<body class="pt-(--nav-h)">
+
+  <!-- Navigation Bar -->
+  <nav id="navbar">
+
+    <!-- Full-width divider SVG — paths written by JS on load and resize -->
+    <svg id="nav-divider-svg" aria-hidden="true" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <!-- Left: transparent at far left, solid gold at logo edge -->
+        <linearGradient id="nav-grad-left" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0"   stop-color="#DAA020" stop-opacity="0"/>
+          <stop offset="0.4" stop-color="#DAA020" stop-opacity="0.8"/>
+          <stop offset="1"   stop-color="#DAA020" stop-opacity="1.0"/>
+        </linearGradient>
+        <!-- Right: solid gold at logo edge, transparent at far right -->
+        <linearGradient id="nav-grad-right" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0"   stop-color="#DAA020" stop-opacity="1.0"/>
+          <stop offset="0.6" stop-color="#DAA020" stop-opacity="0.8"/>
+          <stop offset="1"   stop-color="#DAA020" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <path id="nav-fill-left"  fill="#0d0b09" stroke="none"/>
+      <path id="nav-fill-right" fill="#0d0b09" stroke="none"/>
+      <path id="nav-fill-center" fill="#0d0b09" stroke="none"/>
+      <path id="nav-divider-left"  fill="none" stroke="url(#nav-grad-left)"  stroke-width="1.5"/>
+      <path id="nav-divider-right" fill="none" stroke="url(#nav-grad-right)" stroke-width="1.5"/>
+    </svg>
+
+    <ul class="nav-left">
+      <li class="odd-nav nav-hover"><a href="#about">About</a></li>
+      <li class="even-nav nav-hover"><a href="#philosophy">Philosophy</a></li>
+      <li class="odd-nav nav-hover"><a href="#components">Components</a></li>
+    </ul>
+
+    <!-- Logo — inline SVG, links to hero -->
+    <a href="#hero" class="nav-logo-link">
+      <svg class="nav-logo" viewBox="0 0 680 680" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Rune">
+        <defs>
+          <linearGradient id="logoGoldGrad" x1="340" y1="186" x2="340" y2="490" gradientUnits="userSpaceOnUse">
+            <stop offset="0%"   stop-color="#fff8c0"/>
+            <stop offset="18%"  stop-color="#ffe066"/>
+            <stop offset="50%"  stop-color="#d4a012"/>
+            <stop offset="85%"  stop-color="#a06808"/>
+            <stop offset="100%" stop-color="#7a4e04"/>
+          </linearGradient>
+          <filter id="logoBloom" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="3.5" result="blur"/>
+            <feMerge>
+              <feMergeNode in="blur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+          <clipPath id="logoClip">
+            <rect x="40" y="40" width="600" height="600" rx="128"/>
+          </clipPath>
+        </defs>
+        <g filter="url(#logoBloom)" clip-path="url(#logoClip)" class="rune-logo">
+          <line x1="300" y1="186" x2="300" y2="490" stroke="url(#logoGoldGrad)" stroke-width="19" stroke-linecap="round"/>
+          <line x1="300" y1="238" x2="398" y2="192" stroke="url(#logoGoldGrad)" stroke-width="19" stroke-linecap="round"/>
+          <line x1="398" y1="192" x2="398" y2="334" stroke="url(#logoGoldGrad)" stroke-width="19" stroke-linecap="round"/>
+          <line x1="398" y1="334" x2="300" y2="358" stroke="url(#logoGoldGrad)" stroke-width="19" stroke-linecap="round"/>
+          <line x1="300" y1="358" x2="402" y2="464" stroke="url(#logoGoldGrad)" stroke-width="19" stroke-linecap="round"/>
+        </g>
+        <line x1="216" y1="338" x2="266" y2="338" stroke="#daa020" stroke-width="2.5" stroke-linecap="round" opacity="0.4" clip-path="url(#logoClip)"/>
+        <line x1="432" y1="338" x2="482" y2="338" stroke="#daa020" stroke-width="2.5" stroke-linecap="round" opacity="0.4" clip-path="url(#logoClip)"/>
+      </svg>
+    </a>
+
+    <ul class="nav-right">
+      <li class="even-nav nav-hover"><a href="#opensource">Open-Source</a></li>
+      <li class="odd-nav nav-hover"><a href="#downloads">Downloads</a></li>
+      <li class="even-nav nav-hover"><a href="#tutorial">Tutorial</a></li>
+    </ul>
+
+  </nav>
+
+  <!-- Mobile Navigation Drawer Button -->
+  <button id="drawer-toggle" class="lg:hidden" aria-label="Open navigation" aria-expanded="false" aria-controls="nav-drawer">
+    <img class="drawer-glyph" src="./images/rune_nav_logo.png" aria-hidden="true">
+  </button>
+
+  <!-- Mobile Navigation Drawer background/box -->
+  <div id="drawer-backdrop" class="lg:hidden"></div>
+
+  <!-- Mobile Navigation Drawer Contents/Headings -->
+  <aside id="nav-drawer" class="lg:hidden" aria-hidden="true">
+    <!-- Mobile Navigation Drawer Icon - hero section -->
+    <a href="#hero" class="nav-drawer-icon-link">
+      <img class="nav-drawer-icon" src="./images/rune_nav_logo.png" alt="R">
+    </a>
+
+    <!-- Mobile Navigation Drawer Section Headings -->
+    <nav class="drawer-nav items-center">
+      <a href="#about" class="drawer-link mt-3">About</a>
+      <img class="drawer-divider" src="./images/drawer-divider.svg" alt="">
+      <a href="#philosophy" class="drawer-link">Philosophy</a>
+      <img class="drawer-divider" src="./images/drawer-divider.svg" alt="">
+      <a href="#components" class="drawer-link">Components</a>
+      <img class="drawer-divider" src="./images/drawer-divider.svg" alt="">
+      <a href="#opensource" class="drawer-link">Open-Source</a>
+      <img class="drawer-divider" src="./images/drawer-divider.svg" alt="">
+      <a href="#downloads" class="drawer-link">Downloads</a>
+      <img class="drawer-divider" src="./images/drawer-divider.svg" alt="">
+      <a href="#tutorial" class="drawer-link">Tutorial</a>
+    </nav>
+  </aside>
+
+  <!-- Hero Section -->
+  <section id="hero" class="hero-glow relative flex min-h-[calc(100vh-var(--nav-h))] flex-col items-center justify-center px-6 pb-24 text-center">
+
+    <!-- Title -->
+    <h1 class="title-color font-cinzel font-bold tracking-wider text-[clamp(4rem,1.3333rem+11.8519vw,12rem)] leading-none">
+      Rune
+    </h1>
+
+    <!-- Tagline -->
+    <p class="title-color font-cinzel tracking-widest text-[clamp(0.7752rem,0.4968rem+1.2376vw,1.6106rem)] mb-8">
+      The void carries the message.
+    </p>
+
+    <!-- Divider -->
+    <div class="hero-divider w-[min(95%)] lg:w-[min(640px,70%)] mb-9"></div>
+
+    <!-- Body copy -->
+    <p class="hero-body font-crimson text-[clamp(0.875rem,0.7167rem+0.7037vw,1.35rem)] tracking-[0.08rem] leading-relaxed max-w-2xl mb-9 px-5">
+      Rune intercepts OTP codes on Android and delivers them<br> silently to macOS or your inbox.<br>
+      Private, local, and without lifting a finger.
+    </p>
+
+    <!-- Buttons -->
+    <div class="flex flex-wrap items-center justify-center gap-6 lg:gap-5 mt-8">
+      <a href="#downloads"
+         class="download-button-border font-cinzel font-bold tracking-[0.08rem] lg:text-3xl px-9 py-4 transition hover:brightness-110 hover:scale-[1.015] hover:shadow-[0_0_20px_rgba(212,160,18,0.15)]">
+        <span class="download-text-color">Download</span>
+      </a>
+      <a href="#tutorial"
+         class="tutorial-button-border font-cinzel font-bold tracking-[0.08rem] lg:text-3xl px-5 lg:px-3 py-4 transition hover:brightness-110 hover:scale-[1.015] hover:shadow-[0_0_20px_rgba(212,160,18,0.15)]">
+        <span class="title-color">How it works</span>
+      </a>
+    </div>
+
+    <!-- Scroll cue -->
+    <a href="#about" class="scroll-cue absolute bottom-8 left-1/2 -translate-x-1/2 text-gold text-3xl opacity-70 hover:opacity-100 transition">
+      <span class="scroll-arrow">↓</span>
+    </a>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="relative px-6 min-h-[calc(100vh-var(--nav-h))] flex flex-col items-center justify-center pt-0 pb-24">
+
+    <!-- Two-column grid: text | diagram -->
+    <div class="reveal grid grid-cols-1 lg:grid-cols-2 lg:pl-10 gap-5 items-center w-full max-w-norm">
+      <!-- Left: text column -->
+      <div class="flex flex-col gap-3 lg:gap-5">
+        <!-- Heading -->
+        <h2 class="title-color font-cinzel font-bold leading-none lg:tracking-wider text-center lg:text-right text-[clamp(2.0736rem,1.5441rem+2.3533vw,3.6621rem)] w-auto">
+          What is Rune
+        </h2>
+
+        <!-- Gold intro -->
+        <p class="font-cinzel about-body leading-[1.15] lg:leading-tight tracking-wide text-[clamp(1.2rem,0.975rem+1vw,1.875rem)]">
+          What Huginn intercepts, Muninn receives.<br>
+          Gungnir carries it further.<br>
+          The relay your two devices never had.
+        </p>
+
+        <!-- Body paragraph 1 -->
+        <p class="font-crimson about-body text-[clamp(1rem,0.8333rem+0.7407vw,1.5rem)] leading-normal tracking-wider">
+          When a verification code arrives on your Android device,
+          Huginn captures it instantly. If you're at your Mac,
+          Muninn receives it silently in your menu bar, ready to
+          copy. If you prefer your inbox, Gungnir delivers it there
+          instead.<br>
+          No typing. No switching screens. No interruption.
+        </p>
+
+        <!-- Body paragraph 2 -->
+        <p class="font-crimson about-body text-[clamp(1rem,0.8333rem+0.7407vw,1.5rem)] leading-normal tracking-wider">
+          Everything is encrypted in transit with TLS and
+          authenticated on every request. The path between Huginn
+          and Muninn runs directly over your local network -
+          private and fast. When you're away from Wi-Fi,
+          ngrok provides a secure tunnel so Muninn still receives.<br>
+          Gungnir adds another dimension: if you prefer email delivery,
+          Gungnir carries the code - sealed in transit, nothing compromised.
+        </p>
+      </div>
+
+      <!-- Right: diagram image -->
+      <div class="flex justify-center">
+        <img src="./images/rune_visual_about_no_border.svg"
+             alt="Diagram showing Huginn capturing an OTP and relaying it to Muninn and Gungnir"
+             class="w-full h-auto reveal mt-[clamp(0.25rem,-0.1667rem+1.8519vw,1.5rem)] px-[clamp(1.25rem,0.8333rem+1.8519vw,2.5rem)] pt-[clamp(1.5rem,1rem+2.2222vw,3rem)] pb-[clamp(1.875rem,1.25rem+2.7778vw,3.75rem)] border-[0.3px] border-gold rounded-3xl duration-300 hover:border-gold hover:shadow-[0_0_20px_rgba(212,160,18,0.15)]" style="--reveal-delay: 0.1s">
+      </div>
+    </div>
+
+    <!-- Scroll cue -->
+    <a href="#philosophy" class="scroll-cue absolute bottom-8 left-1/2 -translate-x-1/2 text-gold text-3xl opacity-70 hover:opacity-100 transition">
+      <span class="scroll-arrow">↓</span>
+    </a>
+  </section>
+
+  <!-- Philosophy Section -->
+  <section id="philosophy" class="relative px-1 min-h-[calc(100vh-var(--nav-h))] flex flex-col items-center justify-center pb-24 gap-3 lg:gap-5">
+    
+    <div class="reveal">
+      <!-- Section Title -->
+      <div class="text-center flex flex-col justify-center pb-7">
+        <h2 class="font-cinzel font-bold title-color lg:leading-none lg:tracking-wider text-[clamp(2.0736rem,1.5441rem+2.3533vw,3.6621rem)]">Design Philosophy</h2>
+        
+        <blockquote class="philosophy-quote font-crimson text-(--quote-body) leading-tight tracking-wider text-center text-[clamp(0.8125rem,0.5416rem+1.204vw,1.625rem)]">
+          <p>
+            "Both apps must remain <strong>ultra-lightweight</strong>, invisible by default,<br>
+            and <strong>zero overhead</strong> at idle. No polling loops. No persistent UI.<br>
+            No unnecessary memory allocation."
+          </p>
+          <cite class="text-[#D4A01299] lg:leading-none text-[clamp(0.75rem,0.5833rem+0.7407vw,1.25rem)]">- Rune design specification</cite>
+        </blockquote>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-[clamp(0.5rem,0.25rem+1.1111vw,1.25rem)] w-full max-w-4xl mx-auto px-18 lg:px-6">
+
+        <!-- Card I -->
+        <div class="phil-card reveal border-[0.3px] border-gold rounded-lg px-[clamp(0.25rem,0.1667rem+0.3704vw,0.5rem)] pt-[clamp(0.0625rem,0rem+0.2778vw,0.25rem)] pb-[clamp(1rem,0.6667rem+1.4815vw,2rem)] gap-[clamp(0.25rem,0.1667rem+0.3704vw,0.5rem)] transition duration-300 hover:border-gold hover:shadow-[0_0_20px_rgba(212,160,18,0.15)]" style="--reveal-delay: 0s">
+          <span class="font-cinzel font-bold text-[clamp(0.625rem,0.5rem+0.5556vw,1rem)]">I</span>
+          <h3 class="title-color font-cinzel font-bold text-center text-[clamp(0.875rem,0.5833rem+1.2963vw,1.75rem)] tracking-wider">Episodic Execution</h3>
+          <p class="phil-body px-[clamp(0.625rem,0.4167rem+0.9259vw,1.25rem)] font-crimson text-[clamp(0.75rem,0.5833rem+0.7407vw,1.25rem)] mt-[clamp(0.125rem,0rem+0.5556vw,0.5rem)] tracking-wide leading-snug">
+            Huginn wakes, acts, and terminates. Every execution block is bounded
+            in time. The OS reclaims everything the moment it's done.
+          </p>
+          <p class="phil-body px-[clamp(0.625rem,0.4167rem+0.9259vw,1.25rem)] font-crimson text-[clamp(0.75rem,0.5833rem+0.7407vw,1.25rem)] mt-[clamp(0.1875rem,0rem+0.8333vw,0.75rem)] tracking-wide leading-snug">
+            If it isn't running, it isn't costing you anything.
+          </p>
+        </div>
+
+        <!-- Card II -->
+        <div class="phil-card reveal border-[0.3px] border-gold rounded-lg px-[clamp(0.25rem,0.1667rem+0.3704vw,0.5rem)] pt-[clamp(0.0625rem,0rem+0.2778vw,0.25rem)] pb-[clamp(1rem,0.6667rem+1.4815vw,2rem)] gap-[clamp(0.25rem,0.1667rem+0.3704vw,0.5rem)] transition duration-300 hover:border-gold hover:shadow-[0_0_20px_rgba(212,160,18,0.15)]" style="--reveal-delay: 0.1s">
+          <span class="font-cinzel font-bold text-[clamp(0.625rem,0.5rem+0.5556vw,1rem)]">II</span>
+          <h3 class="title-color font-cinzel font-bold text-center text-[clamp(0.875rem,0.5833rem+1.2963vw,1.75rem)] tracking-wider">Kernel Wait State</h3>
+          <p class="phil-body px-[clamp(0.625rem,0.4167rem+0.9259vw,1.25rem)] font-crimson text-[clamp(0.75rem,0.5833rem+0.7407vw,1.25rem)] mt-[clamp(0.125rem,0rem+0.5556vw,0.5rem)] tracking-wide leading-snug">
+            Muninn idles in a kernel wait state at 0.0% CPU. CFRunLoop sleeps
+            at the kernel level until a connection arrives - then it wakes.
+          </p>
+          <p class="phil-body px-[clamp(0.625rem,0.4167rem+0.9259vw,1.25rem)] font-crimson text-[clamp(0.75rem,0.5833rem+0.7407vw,1.25rem)] mt-[clamp(0.1875rem,0rem+0.8333vw,0.75rem)] tracking-wide leading-snug">
+            Presence without consumption.
+          </p>
+        </div>
+
+        <!-- Card III -->
+        <div class="phil-card reveal border-[0.3px] border-gold rounded-lg px-[clamp(0.25rem,0.1667rem+0.3704vw,0.5rem)] pt-[clamp(0.0625rem,0rem+0.2778vw,0.25rem)] pb-[clamp(1rem,0.6667rem+1.4815vw,2rem)] gap-[clamp(0.25rem,0.1667rem+0.3704vw,0.5rem)] transition duration-300 hover:border-gold hover:shadow-[0_0_20px_rgba(212,160,18,0.15)]" style="--reveal-delay: 0.2s">
+          <span class="font-cinzel font-bold text-[clamp(0.625rem,0.5rem+0.5556vw,1rem)]">III</span>
+          <h3 class="title-color font-cinzel font-bold text-center text-[clamp(0.875rem,0.5833rem+1.2963vw,1.75rem)] tracking-wider">Zero Trust Transport</h3>
+          <p class="phil-body px-[clamp(0.625rem,0.4167rem+0.9259vw,1.25rem)] font-crimson text-[clamp(0.75rem,0.5833rem+0.7407vw,1.25rem)] mt-[clamp(0.125rem,0rem+0.5556vw,0.5rem)] tracking-wide leading-snug">
+            TLS on every path. Certificate pinning on the local route.
+            Bearer token authentication on every request.
+          </p>
+          <p class="phil-body px-[clamp(0.625rem,0.4167rem+0.9259vw,1.25rem)] font-crimson text-[clamp(0.75rem,0.5833rem+0.7407vw,1.25rem)] mt-[clamp(0.1875rem,0rem+0.8333vw,0.75rem)] tracking-wide leading-snug">
+            Trust is earned at every step, not assumed at any.
+          </p>
+        </div>
+
+        <!-- Card IV -->
+        <div class="phil-card reveal border-[0.3px] border-gold rounded-lg px-[clamp(0.25rem,0.1667rem+0.3704vw,0.5rem)] pt-[clamp(0.0625rem,0rem+0.2778vw,0.25rem)] pb-[clamp(1rem,0.6667rem+1.4815vw,2rem)] gap-[clamp(0.25rem,0.1667rem+0.3704vw,0.5rem)] transition duration-300 hover:border-gold hover:shadow-[0_0_20px_rgba(212,160,18,0.15)]" style="--reveal-delay: 0.3s">
+          <span class="font-cinzel font-bold text-[clamp(0.625rem,0.5rem+0.5556vw,1rem)]">IV</span>
+          <h3 class="title-color font-cinzel font-bold text-center text-[clamp(0.875rem,0.5833rem+1.2963vw,1.75rem)] tracking-wider">Dual-Path Routing</h3>
+          <p class="phil-body px-[clamp(0.625rem,0.4167rem+0.9259vw,1.25rem)] font-crimson text-[clamp(0.75rem,0.5833rem+0.7407vw,1.25rem)] mt-[clamp(0.125rem,0rem+0.5556vw,0.5rem)] tracking-wide leading-snug">
+            Local Wi-Fi via Bonjour is the primary path. When you step away,
+            ngrok provides a secure tunnel automatically.
+          </p>
+          <p class="phil-body px-[clamp(0.625rem,0.4167rem+0.9259vw,1.25rem)] font-crimson text-[clamp(0.75rem,0.5833rem+0.7407vw,1.25rem)] mt-[clamp(0.1875rem,0rem+0.8333vw,0.75rem)] tracking-wide leading-snug">
+            Connectivity is not a condition, it's a guarantee.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll cue -->
+    <a href="#components" class="scroll-cue absolute bottom-8 left-1/2 -translate-x-1/2 text-gold text-3xl opacity-70 hover:opacity-100 transition">
+      <span class="scroll-arrow">↓</span>
+    </a>
+  </section>
+
+  <!-- Components Section -->
+  <section id="components" class="relative px-1 min-h-[calc(100vh-var(--nav-h))] flex flex-col items-center justify-center pb-24 gap-3 lg:gap-5">
+    
+    <div class="reveal pb-7 lg:px-18">
+      <!-- Section Title -->
+      <div class="text-left flex flex-col align-self-start px-4 lg:px-28 mr-auto leading-tight">
+        <h2 class="font-cinzel font-bold title-color text-center lg:text-left lg:leading-none tracking-wide lg:tracking-wider text-2xl lg:text-[clamp(2.0736rem,1.5441rem+2.3533vw,3.6621rem)]">The three Components</h2>
+        <h3 class="font-crimson about-body text-center lg:text-left leading-[1.15] lg:leading-tight tracking-wide text-base lg:text-[clamp(1.2rem,0.975rem+1vw,1.875rem)]">Rune is built from three components, each with a single purpose. Distinct by design.</h3>
+      </div>
+
+      <!-- Component Cards -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-[clamp(0.5rem,-0.4167rem+4.0741vw,3.25rem)] w-full max-w-norm mx-auto px-10 lg:px-28 mt-4 lg:mt-15">
+        
+        <!-- Card I -->
+        <div class="comp-card reveal border-[0.3px] border-gold rounded-lg gap-[clamp(0.25rem,0.1667rem+0.3704vw,0.5rem)] pl-[clamp(0.875rem,0.5833rem+1.2963vw,1.75rem)] p-[clamp(0.625rem,0.3333rem+1.2963vw,1.5rem)] transition duration-300 hover:border-gold hover:shadow-[0_0_20px_rgba(212,160,18,0.15)]" style="--reveal-delay: 0.0s">
+          <!-- <span class="font-cinzel title-color text-[clamp(2.4883rem,1.7919rem+3.0953vw,4.5776rem)] leading-none">H</span> -->
+          <img class="mt-[clamp(0.3125rem,0rem+1.3889vw,1.25rem)]" src="./images/H.svg" alt="H">
+          <h4 class="font-cinzel font-bold tracking-wider text-[clamp(1.44rem,1.1388rem+1.3389vw,2.3438rem)] mt-[clamp(0.75rem,0.3333rem+1.8519vw,2rem)] leading-none">Huginn</h4>
+          <h5 class="font-cinzel comp-body tracking-wider text-[clamp(0.6944rem,0.6059rem+0.3934vw,0.96rem)]">Android - The Interceptor</h5>
+          <p class="comp-body font-crimson leading-snug tracking-wider text-[clamp(0.8333rem,0.7111rem+0.5432vw,1.2rem)] mt-[clamp(0.75rem,0.5rem+1.1111vw,1.5rem)]">Watches for incoming OTP codes via SMS and clipboard. When a code arrives, it wakes, captures it, and forwards it instantly - then disappears.</p>
+          <p class="comp-body font-crimson leading-snug tracking-wider text-[clamp(0.8333rem,0.7111rem+0.5432vw,1.2rem)] mt-0">Zero idle CPU, no persistent background process.</p>
+          <span class="border-[0.1px] border-gold bg-stone-900 w-fit self-start mt-[clamp(0.75rem,0.6667rem+0.3704vw,1rem)] mb-[clamp(0.75rem,0.25rem+2.2222vw,2.25rem)] px-[clamp(0.375rem,0.3333rem+0.1852vw,0.5rem)] pb-1">
+            <span class="title-color font-cinzel tracking-wider text-[clamp(0.5787rem,0.5156rem+0.2804vw,0.768rem)]">Android · Kotlin</span>
+          </span>
+        </div>
+        
+        <!-- Card II -->
+        <div class="comp-card reveal border-[0.3px] border-gold rounded-lg gap-[clamp(0.25rem,0.1667rem+0.3704vw,0.5rem)] pl-[clamp(0.875rem,0.5833rem+1.2963vw,1.75rem)] p-[clamp(0.625rem,0.3333rem+1.2963vw,1.5rem)] transition duration-300 hover:border-gold hover:shadow-[0_0_20px_rgba(212,160,18,0.15)]" style="--reveal-delay: 0.1s">
+          <!-- <span class="font-cinzel title-color text-[clamp(2.4883rem,1.7919rem+3.0953vw,4.5776rem)] leading-none">M</span> -->
+          <img class="mt-[clamp(0.3125rem,0rem+1.3889vw,1.25rem)]" src="./images/M.svg" alt="M">
+          <h4 class="font-cinzel font-bold tracking-wider text-[clamp(1.44rem,1.1388rem+1.3389vw,2.3438rem)] mt-[clamp(0.75rem,0.3333rem+1.8519vw,2rem)] leading-none">Muninn</h4>
+          <h5 class="font-cinzel comp-body tracking-wider text-[clamp(0.6944rem,0.6059rem+0.3934vw,0.96rem)]">macOS - The Receiver</h5>
+          <p class="comp-body font-crimson leading-snug tracking-wider text-[clamp(0.8333rem,0.7111rem+0.5432vw,1.2rem)] mt-[clamp(0.75rem,0.5rem+1.1111vw,1.5rem)]">A dock-less menu bar utility. Runs a native TLS server, receives codes from Huginn, and displays them in a minimal popover - ready to copy with one click.</p>
+          <p class="comp-body font-crimson leading-snug tracking-wider text-[clamp(0.8333rem,0.7111rem+0.5432vw,1.2rem)] mt-0">At idle, it waits silently - consuming near zero memory.</p>
+          <span class="border-[0.1px] border-gold bg-stone-900 w-fit self-start mt-[clamp(0.75rem,0.6667rem+0.3704vw,1rem)] mb-[clamp(0.75rem,0.25rem+2.2222vw,2.25rem)] px-[clamp(0.375rem,0.3333rem+0.1852vw,0.5rem)] pb-1">
+            <span class="title-color font-cinzel tracking-wider text-[clamp(0.5787rem,0.5156rem+0.2804vw,0.768rem)]">macOS · Swift</span>
+          </span>
+        </div>
+        
+        <!-- Card III -->
+        <div class="comp-card reveal border-[0.3px] border-gold rounded-lg gap-[clamp(0.25rem,0.1667rem+0.3704vw,0.5rem)] pl-[clamp(0.875rem,0.5833rem+1.2963vw,1.75rem)] p-[clamp(0.625rem,0.3333rem+1.2963vw,1.5rem)] transition duration-300 hover:border-gold hover:shadow-[0_0_20px_rgba(212,160,18,0.15)]" style="--reveal-delay: 0.2s">
+          <!-- <span class="font-cinzel title-color text-[clamp(2.4883rem,1.7919rem+3.0953vw,4.5776rem)] leading-none">X</span> -->
+          <img class="mt-[clamp(0.3125rem,0rem+1.3889vw,1.25rem)]" src="./images/X.svg" alt="X">
+          <h4 class="font-cinzel font-bold tracking-wider text-[clamp(1.44rem,1.1388rem+1.3389vw,2.3438rem)] mt-[clamp(0.75rem,0.3333rem+1.8519vw,2rem)] leading-none">Gungnir</h4>
+          <h5 class="font-cinzel comp-body tracking-wider text-[clamp(0.6944rem,0.6059rem+0.3934vw,0.96rem)]">Node.js - The Spear</h5>
+          <p class="comp-body font-crimson leading-snug tracking-wider text-[clamp(0.8333rem,0.7111rem+0.5432vw,1.2rem)] mt-[clamp(0.75rem,0.5rem+1.1111vw,1.5rem)]">The email delivery arm of Rune. When you prefer your codes in your inbox, Huginn routes them through Gungnir instead.</p>
+          <p class="comp-body font-crimson leading-snug tracking-wider text-[clamp(0.8333rem,0.7111rem+0.5432vw,1.2rem)] mt-0">No UI. No overhead. Just the code, in your inbox.</p>
+          <span class="border-[0.1px] border-gold bg-stone-900 w-fit self-start mt-[clamp(0.75rem,0.6667rem+0.3704vw,1rem)] mb-[clamp(0.75rem,0.25rem+2.2222vw,2.25rem)] px-[clamp(0.375rem,0.3333rem+0.1852vw,0.5rem)] pb-1">
+            <span class="title-color font-cinzel tracking-wider text-[clamp(0.5787rem,0.5156rem+0.2804vw,0.768rem)]">Node.js · Render</span>
+          </span>
+        </div>
+
+        
+      </div>
+    </div>
+
+    <!-- Scroll cue -->
+    <a href="#opensource" class="scroll-cue absolute bottom-8 left-1/2 -translate-x-1/2 text-gold text-3xl opacity-70 hover:opacity-100 transition">
+      <span class="scroll-arrow">↓</span>
+    </a>
+  </section>
+
+  <!-- Open-Source Section -->
+  <section id="opensource" class="relative px-1 min-h-[calc(100vh-var(--nav-h))] flex flex-col items-center justify-center pb-24 gap-3 lg:gap-5">
+    
+    <div class="reveal">
+      <!-- Section Title -->
+      <div class="text-center flex flex-col justify-center">
+        <h2 class="font-cinzel font-bold title-color leading-snug lg:tracking-wider text-[clamp(2.0736rem,1.5441rem+2.3533vw,3.6621rem)]">Open-Source</h2>
+        <h3 class="font-crimson text-(--quote-body) italic font-thin leading-none text-base lg:text-[clamp(0.8125rem,0.5416rem+1.204vw,1.625rem)] tracking-wider">Rune is open source. Every line is yours to read.</h3>
+      </div>
+
+      <!-- Under Construction note -->
+      <div class="flex justify-center py-80">
+        <span class="font-crimson text-[clamp(0.8125rem,0.5416rem+1.204vw,1.625rem)] text-white/70 font-extralight tracking-wide"><i>Open-Source Section is under construction...</i></span>
+      </div>
+
+      <!-- Code Cards -->
+      <!-- <div class="grid grid-cols-1 lg:grid-cols-2 lg:grid-rows-2 gap-[clamp(0.5rem,0.25rem+1.1111vw,1.25rem)] w-full max-w-4xl mt-5 mx-auto px-18 lg:px-6"> -->
+        <!-- GitHub Card -->
+        <!-- <div class="github-card reveal justify-items-center items-start border-[0.3px] border-gold rounded-lg">
+          <h4 class="font-cinzel title-color">Sifr / Rune</h4>
+          <span class="hero-divider w-[min(95%)] lg:w-[min(640px,70%)] mb-9"></span>
+          <h5 class="font-crimson tracking-wider mb-7">A private OTP relay for Android and macOS.</h5> -->
+          <!-- Language dots -->
+          <!-- <span class="grid grid-cols-3">
+            <span>Kotlin</span>
+            <span>Swift</span>
+            <span>JavaScript</span>
+          </span> -->
+          <!-- Stars and forks -->
+          <!-- <span class="grid grid-cols-2 mt-3">
+            <span></span>
+            <span></span>
+          </span>
+          <a href="https://github.com/deonasn" target="_blank" rel="noopener noreferrer" class="title-color font-cinzel tracking-wide border border-gold rounded-lg px-4 py-1">View on GitHub</a> -->
+
+        <!-- </div> -->
+      <!-- </div> -->
+    </div>
+
+
+    <!-- Scroll cue -->
+    <a href="#downloads" class="scroll-cue absolute bottom-8 left-1/2 -translate-x-1/2 text-gold text-3xl opacity-70 hover:opacity-100 transition">
+      <span class="scroll-arrow">↓</span>
+    </a>
+  </section>
+
+
+
+  <!-- Downloads Section -->
+  <section id="downloads" class="relative px-1 min-h-[calc(100vh-var(--nav-h))] flex flex-col items-center justify-center pb-24 gap-3 lg:gap-5">
+    
+    <div class="reveal">
+      <!-- Section Title -->
+      <div class="text-center flex flex-col justify-center">
+        <h2 class="font-cinzel font-bold title-color leading-snug lg:tracking-wider text-[clamp(2.0736rem,1.5441rem+2.3533vw,3.6621rem)]">Download Rune</h2>
+        <h3 class="font-crimson text-(--quote-body) text-base leading-snug lg:text-[clamp(1.2rem,0.975rem+1vw,1.875rem)] tracking-wider">Huginn and Muninn work in tandem. The relay only works when both ravens fly.</h3>
+      </div>
+
+      <!-- Download Cards -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-[clamp(0.5rem,-1rem+6.6667vw,5rem)] w-full max-w-norm mx-auto px-10 lg:px-10 mt-4 lg:mt-10">
+
+        <!-- Huginn Card -->
+        <div class="down-card reveal justify-items-center items-start border-[0.3px] border-gold rounded-xl gap-2 px-6 pt-2 lg:pt-8 pb-2 lg:pb-12 transition duration-300 hover:border-gold hover:shadow-[0_0_20px_rgba(212,160,18,0.15)]" style="--reveal-delay: 0.0s">
+          <!-- <span class="font-cinzel title-color text-[clamp(2.4883rem,1.7919rem+3.0953vw,4.5776rem)] leading-none">H</span> -->
+          <img class="lg:h-16 lg:w-auto mt-5" src="./images/H.svg" alt="H">
+          <h4 class="font-cinzel font-bold tracking-wider text-[clamp(1.44rem,1.1388rem+1.3389vw,2.3438rem)] mt-2 lg:mt-0 leading-none self-end">Huginn</h4>
+          <h5 class="font-cinzel comp-body tracking-wider text-[clamp(0.6944rem,0.6059rem+0.3934vw,0.96rem)]">Android APK · v2.5.1</h5>
+          <p class="title-color font-cinzel leading-snug tracking-wider text-[clamp(0.8333rem,0.7111rem+0.5432vw,1.2rem)] mt-2 lg:mt-0">The interceptor for Android</p>
+          <!-- Huginn Download Button -->
+          <a href="application_files/Huginn-v2.5.1.apk" download="Huginn-v2.5.1.apk" class="download-button-border font-cinzel font-bold tracking-[0.08rem] lg:text-2xl flex items-center gap-2 px-6 py-3 m-4 transition hover:brightness-110 hover:scale-[1.015] hover:shadow-[0_0_20px_rgba(212,160,18,0.15)]">
+            <span class="download-text-color">Download</span>
+            <svg class="w-5 h-5 lg:w-7 lg:h-7" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="6" y="2" width="12" height="20" rx="2" stroke="#FFFFFF" stroke-width="2"/>
+              <line x1="11" y1="18" x2="13" y2="18" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </a>
+        </div>
+        
+        <!-- Muninn Card -->
+        <div class="down-card reveal justify-items-center items-start border-[0.3px] border-gold rounded-xl gap-2 px-6 pt-2 lg:pt-8 pb-2 lg:pb-12 transition duration-300 hover:border-gold hover:shadow-[0_0_20px_rgba(212,160,18,0.15)]" style="--reveal-delay: 0.1s">
+          <!-- <span class="font-cinzel title-color text-[clamp(2.4883rem,1.7919rem+3.0953vw,4.5776rem)] leading-none">H</span> -->
+          <img class="lg:h-16 lg:w-auto mt-5" src="./images/M.svg" alt="M">
+          <h4 class="font-cinzel font-bold tracking-wider text-[clamp(1.44rem,1.1388rem+1.3389vw,2.3438rem)] mt-2 lg:mt-0 leading-none self-end">Muninn</h4>
+          <h5 class="font-cinzel comp-body tracking-wider text-[clamp(0.6944rem,0.6059rem+0.3934vw,0.96rem)]">macOS App · v2.5.1</h5>
+          <p class="title-color font-cinzel leading-snug tracking-wider text-[clamp(0.8333rem,0.7111rem+0.5432vw,1.2rem)] mt-2 lg:mt-0">The receiver for macOS</p>
+          <!-- Muninn Download Button -->
+          <a href="application_files/Muninn-v2.5.1.dmg" download="Muninn-v2.5.1.dmg" class="download-button-border font-cinzel font-bold tracking-[0.08rem] lg:text-2xl flex items-center gap-2 px-6 py-3 m-4 transition hover:brightness-110 hover:scale-[1.015] hover:shadow-[0_0_20px_rgba(212,160,18,0.15)]">
+            <span class="download-text-color">Download</span>
+            <svg class="w-5 h-5 lg:w-7 lg:h-7" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="2" y="4" width="20" height="13" rx="2" stroke="#FFFFFF" stroke-width="2"/>
+              <line x1="8" y1="21" x2="16" y2="21" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <p class="font-crimson reveal italic text-[#ffffff82] text-center mt-5 tracking-wider text-[clamp(0.8333rem,0.7111rem+0.5432vw,1.2rem)] p-5" style="--reveal-delay: 0.1s">Gungnir powers email delivery in the background - no download needed. Just enter your email in Huginn's Settings.</p>
+    </div>
+
+    <!-- Scroll cue -->
+    <a href="#tutorial" class="scroll-cue absolute bottom-8 left-1/2 -translate-x-1/2 text-gold text-3xl opacity-70 hover:opacity-100 transition">
+      <span class="scroll-arrow">↓</span>
+    </a>
+  </section>
+
+  <!-- Tutorial Section -->
+  <section id="tutorial" class="relative px-1 min-h-[calc(100vh-var(--nav-h))] flex flex-col items-center justify-center pb-24 gap-3 lg:gap-5">
+    
+    <div class="reveal">
+      <!-- Section Title -->
+      <div class="text-center flex flex-col justify-center">
+        <h2 class="font-cinzel font-bold title-color leading-snug lg:tracking-wider text-[clamp(2.0736rem,1.5441rem+2.3533vw,3.6621rem)]">Tutorial</h2>
+      </div>
+
+      <!-- Under Construction note -->
+      <div class="flex justify-center py-60">
+        <span class="font-crimson text-[clamp(0.8125rem,0.5416rem+1.204vw,1.625rem)] text-white/70 font-extralight tracking-wide"><i>A step-by-step walkthrough is on the way...</i></span>
+      </div>
+      
+    </div>
+  </section>
+
+
+  <!-- Footer -->
+  <footer>
+    <!-- Footer Divider Line -->
+    <div class="footer-divider-container">
+      <svg id="footer-divider-svg" aria-hidden="true" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="footer-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0"   stop-color="#DAA020" stop-opacity="0"/>
+            <stop offset="0.1"   stop-color="#DAA020" stop-opacity="0.8"/>
+            <stop offset="0.5" stop-color="#DAA020" stop-opacity="1.0"/>
+            <stop offset="0.9"   stop-color="#DAA020" stop-opacity="0.8"/>
+            <stop offset="1"   stop-color="#DAA020" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <path id="footer-divider-path"  fill="none" stroke="url(#footer-grad)"  stroke-width="1.5"/>
+      </svg>
+    </div>
+
+    <!-- First Row - Sifr Brand Icon -->
+    <div class="flex items-center justify-center mt-[clamp(-4rem,-4rem+0vw,-4rem)] mb-8 lg:mb-5">
+      <img src="./images/sifr_icon.png" alt="صفر" lang="ar" class="h-[clamp(1.5rem,0.9167rem+2.5926vw,3.25rem)] w-auto">
+    </div>
+
+    <!-- Second Row - Details/Information -->
+    <div class="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] px-[clamp(2.5rem,-0.75rem+14.4444vw,12.25rem)] gap-7">
+
+      <!-- First Column - Rune-Sifr relation establishment -->
+      <div class="flex flex-col items-start w-fit mx-auto lg:mx-0">
+        <span class="title-color font-cinzel font-bold tracking-wider text-[clamp(1.25rem,0.8333rem+1.8519vw,2.5rem)] leading-none">Rune</span>
+        <span class="font-crimson text-[clamp(1rem,0.9167rem+0.3704vw,1.25rem)] text-white/80 leading-none pl-[clamp(2.5rem,2.0833rem+1.8519vw,3.75rem)]">by <em lang="ar" class="text-(--text-body)">Sifr - صفر</em></span>
+      </div>
+
+      <!-- Second Column - Highlight -->
+      <div class="flex flex-col items-center gap-1 lg:gap-5">
+        <span class="title-color font-cinzel tracking-widest text-[clamp(0.9375rem,0.8333rem+0.463vw,1.25rem)]">The Void Carries the Message.</span>
+        <span class="title-color font-crimson tracking-widest text-[clamp(0.875rem,0.7708rem+0.463vw,1.1875rem)]">Developed by <b class="font-semibold">Deon Anoth</b></span>
+      </div>
+
+      <!-- Third Column - User/Brand Hyperlinks -->
+      <div class="flex flex-col items-center lg:items-end font-crimson tracking-wider text-[clamp(0.875rem,0.7708rem+0.463vw,1.1875rem)] leading-normal text-nowrap">
+        <a href="https://github.com/deonasn" target="_blank">GitHub</a>
+        <span href="https://deon.sifr.space" target="_blank">Developer: deon.sifr.space</span>
+        <span href="https://sifr.space" target="_blank">sifr.space</span>
+      </div>
+
+    </div>
+
+    <!-- Third Row - Copyright Info -->
+    <div class="flex justify-center mt-5 lg:mb-5">
+      <span class="font-crimson text-[#ffffff82] text-[clamp(0.875rem,0.8333rem+0.1852vw,1rem)] tracking-widest">© 2026 Sifr. All Rights Reserved.</span>
+    </div>
+
+  </footer>
+
+
+
+<script src="rune.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body>
+</html>

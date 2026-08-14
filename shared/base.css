@@ -1,0 +1,35 @@
+/* ============================================================
+   base.css - sifr.space
+   Base styles to be shared for every child.
+   ============================================================ */
+
+:root {
+  --gold-bright:  #FFFFF8C0;
+  --gold-light:   #FFE066;
+  --gold:         #D4A012;
+  --gold-deep:    #A06808;
+  --gold-dark:    #7A4E04;
+  --black:        #0A0806;
+  --black-soft:   #100E0A;
+  --surface:      #161210;
+  --text-muted:   #6A5E4A;
+  --text-dim:     #8C7A5E;
+  --text-body:    #FFFFFF;
+  --quote-body:   #C4AA80;
+  --border:       rgba(212,160,18,0.18);
+  --border-glow:  rgba(212,160,18,0.35);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--black);
+  color: var(--text-body);
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-weight: 300;
+  font-size: 18px;
+  line-height: 1.5;
+  overflow-x: hidden;
+}
